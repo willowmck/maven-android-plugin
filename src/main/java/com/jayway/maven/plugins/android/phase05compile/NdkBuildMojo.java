@@ -407,12 +407,16 @@ public class NdkBuildMojo extends AbstractAndroidMojo {
 
             File[] files = nativeLibDirectory.listFiles( new FilenameFilter() {
                 public boolean accept( final File dir, final String name ) {
+                    getLog().info( "Looking for " + name + " in " + dir.getAbsolutePath() );
+                    boolean success = false;
                     if ( "a".equals( project.getPackaging() ) ) {
-                        return name.startsWith("lib" + (target != null ? target : project.getArtifactId())) && name.endsWith(".a");
+                        success = name.startsWith("lib" + (target != null ? target : project.getArtifactId())) && name.endsWith(".a");
                     }
                     else {
-                        return name.startsWith("lib" + (target != null ? target : project.getArtifactId())) && name.endsWith(".so");
+                        success = name.startsWith("lib" + project.getArtifactId()) && name.endsWith(".so");
                     }
+                    if (success) getLog().info( name + " was found.");
+                    return success;
                 }
             } );
 
